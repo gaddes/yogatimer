@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 // import { Link } from 'react-router-dom';
-// TODO: get chime sound working!
-import chime from '../src/audio/chime.mp3';
 import './home.scss'
+import chime from './audio/chime.mp3';
 
 const setCountdown = (minutes) => {
   // Make buttons inactive
@@ -17,6 +16,7 @@ const setCountdown = (minutes) => {
   let seconds = minutes * 60;
   // Show initial time
   currentTime.innerHTML = `${minutes}:00`;
+
   // FIXME: for dev only
   seconds = 3;
 
@@ -30,16 +30,10 @@ const setCountdown = (minutes) => {
     //   });
     // }
 
-    console.log(this.player);
-    
-
     console.log(`seconds = ${seconds}`);
-    
 
     if (seconds === 0) {
       // play chime and reset timer
-      // TODO: get chime sound working!
-      // chime.play();
 
       // stop timer
       clearInterval(timer);
@@ -59,8 +53,24 @@ const setCountdown = (minutes) => {
   const timer = setInterval(countdown, 1000);
 }
 
-
 export default class Home extends Component {
+
+  constructor(props) {
+    super(props);
+
+    // this.url = "http://streaming.tdiradio.com:8000/house.mp3";
+    // this.audio = new Audio(this.url);
+    this.audio = new Audio(chime);
+
+    // Bind methods so 'this' refers to instance of component
+    this.play = this.play.bind(this);
+  }
+
+  play() {
+    console.log(this.audio);
+    this.audio.play();
+  }
+
   render() {
     return (
       <div>
@@ -73,6 +83,7 @@ export default class Home extends Component {
         <button className='timerbutton' onClick={() => setCountdown(3)}>3</button>
         <button className='timerbutton' onClick={() => setCountdown(4)}>4</button>
         <button className='timerbutton' onClick={() => setCountdown(5)}>5</button>
+        <button className='timerbutton' onClick={this.play}>BUTTON</button>
       </div>
     )
   }
