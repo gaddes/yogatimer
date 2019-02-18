@@ -3,7 +3,10 @@ import React, { Component } from 'react'
 import './home.scss'
 import chime from './audio/chime.mp3';
 
-const setCountdown = (minutes) => {
+const setCountdown = (totalTime) => {
+  // Keep track of initial time
+  const initialTime = totalTime;
+
   // Make buttons inactive
   let buttons = document.querySelectorAll('.timerbutton');
   buttons.forEach(function(btn) {
@@ -12,45 +15,62 @@ const setCountdown = (minutes) => {
 
   // Grab countdown element
   let currentTime = document.querySelector('.countdown');
-  // Convert mins to seconds
-  let seconds = minutes * 60;
-  // Show initial time
-  currentTime.innerHTML = `${minutes}:00`;
 
   // FIXME: for dev only
-  seconds = 3;
+  // totalTime = 3;
 
   const countdown = () => {
-    // let remainder = seconds / 60;
+    console.log(totalTime);
 
-    // if (seconds === 0) {
-    //   // activate buttons
-    //   buttons.forEach(function(btn) {
-    //     btn.setAttribute('disabled', false);
-    //   });
-    // }
+    let minutes;
+    let seconds;
 
-    console.log(`seconds = ${seconds}`);
+    switch(totalTime) {
+      case 0:
+        // TODO: Activate buttons  
+        // Play sound and reset timer
+        const sound = new Audio(chime);
+        sound.play();
 
-    if (seconds === 0) {
-      // play sound and reset timer
-      const sound = new Audio(chime);
-      sound.play();
+        // TODO: abstract this block into a separate function
+        // Calculate mins/secs
+        minutes = Math.floor(initialTime / 60);
+        seconds = initialTime % 60;
+        // Display time
+        currentTime.innerHTML = `${minutes}:${seconds}`;
 
-      // stop timer
-      clearInterval(timer);
-    } else {
-      console.log(seconds);
-      
-      // Decrease seconds by one
-      seconds = seconds - 1;
-      // Update element on page
-      currentTime.innerHTML = `${minutes}:${seconds}`;
+        totalTime = initialTime - 1;
+
+        // TODO: Stop timer
+        // clearInterval(timer);
+        break;
+
+      case 1:
+        // Reset totalTime to the length of time selected by the user
+        totalTime = totalTime - 1;
+        // Calculate mins/secs
+        minutes = Math.floor(initialTime / 60);
+        seconds = initialTime % 60;
+        // Display time
+        currentTime.innerHTML = `0:1`;
+        break;
+
+      default:
+        // Calculate mins/secs
+        minutes = Math.floor(totalTime / 60);
+        seconds = totalTime % 60;
+
+        // Display time
+        currentTime.innerHTML = `${minutes}:${seconds}`;
+
+        // Decrease seconds by one
+        totalTime = totalTime - 1;
+        break;
     }
   }
 
   // Call countdown function immediately on button click
-  countdown(seconds);
+  countdown();
   // Decrease time remaining every second
   const timer = setInterval(countdown, 1000);
 }
@@ -60,14 +80,14 @@ export default class Home extends Component {
     return (
       <div>
         <audio ref={ref => this.player = ref} />
-        <h1 className='countdown'>02:47</h1>
+        <h1 className='countdown'>00:00</h1>
         <p>5 loops remaining</p>
         <p>Choose number of minutes</p>
-        <button className='timerbutton' onClick={() => setCountdown(1)}>1</button>
-        <button className='timerbutton' onClick={() => setCountdown(2)}>2</button>
-        <button className='timerbutton' onClick={() => setCountdown(3)}>3</button>
-        <button className='timerbutton' onClick={() => setCountdown(4)}>4</button>
-        <button className='timerbutton' onClick={() => setCountdown(5)}>5</button>
+        <button className='timerbutton' onClick={() => setCountdown(60)}>1</button>
+        <button className='timerbutton' onClick={() => setCountdown(120)}>2</button>
+        <button className='timerbutton' onClick={() => setCountdown(180)}>3</button>
+        <button className='timerbutton' onClick={() => setCountdown(240)}>4</button>
+        <button className='timerbutton' onClick={() => setCountdown(300)}>5</button>
       </div>
     )
   }
