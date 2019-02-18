@@ -33,7 +33,9 @@ const setCountdown = (minutes) => {
     console.log(`seconds = ${seconds}`);
 
     if (seconds === 0) {
-      // play chime and reset timer
+      // play sound and reset timer
+      const sound = new Audio(chime);
+      sound.play();
 
       // stop timer
       clearInterval(timer);
@@ -54,23 +56,6 @@ const setCountdown = (minutes) => {
 }
 
 export default class Home extends Component {
-
-  constructor(props) {
-    super(props);
-
-    // this.url = "http://streaming.tdiradio.com:8000/house.mp3";
-    // this.audio = new Audio(this.url);
-    this.audio = new Audio(chime);
-
-    // Bind methods so 'this' refers to instance of component
-    this.play = this.play.bind(this);
-  }
-
-  play() {
-    console.log(this.audio);
-    this.audio.play();
-  }
-
   render() {
     return (
       <div>
@@ -83,7 +68,6 @@ export default class Home extends Component {
         <button className='timerbutton' onClick={() => setCountdown(3)}>3</button>
         <button className='timerbutton' onClick={() => setCountdown(4)}>4</button>
         <button className='timerbutton' onClick={() => setCountdown(5)}>5</button>
-        <button className='timerbutton' onClick={this.play}>BUTTON</button>
       </div>
     )
   }
