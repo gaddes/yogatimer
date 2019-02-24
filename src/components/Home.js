@@ -12,11 +12,12 @@ window.onload = function() {
   // Select elements
   const timerButtons = document.querySelectorAll('.timerbutton');
   const cancelButton = document.querySelector('.cancelbutton');
+  const countdownElement = document.querySelector('.countdown');
 
   // Start countdown and disable all buttons, regardless of which one is clicked
   timerButtons.forEach(function(btn) {
     btn.addEventListener('click', function() {
-      startCountdown(btn.innerHTML * 60);
+      startCountdown(btn.innerHTML * 60, countdownElement);
       disableButtons(timerButtons);
       enableButtons([cancelButton]);
     });
@@ -24,13 +25,14 @@ window.onload = function() {
 
   // Reset countdown and enable all buttons
   cancelButton.addEventListener('click', function() {
-    resetCountdown();
+    resetCountdown(intervalID, countdownElement);
     enableButtons(timerButtons);
     disableButtons([cancelButton]);
   });
 };
 
 /** 
+ * Disable buttons
  * @param {array} btnArray - For each element in array, disable button by adding 'disabled = true' attribute
 */
 const disableButtons = (btnArray) => {
@@ -40,6 +42,7 @@ const disableButtons = (btnArray) => {
 };
 
 /** 
+ * Enable buttons
  * @param {array} btnArray - For each element in array, enable button by removing 'disabled' attribute
 */
 const enableButtons = (btnArray) => {
@@ -48,7 +51,12 @@ const enableButtons = (btnArray) => {
   })
 };
 
-const startCountdown = (timePerLoop) => {
+/**
+ * Start the countdown timer
+ * @param {number} timePerLoop 
+ * @param {element} countdownElement 
+ */
+const startCountdown = (timePerLoop, countdownElement) => {
   // TODO: replace this with user-selected number of loops
   let numberOfLoops = 1;
   let totalTime = timePerLoop * numberOfLoops;
@@ -56,11 +64,7 @@ const startCountdown = (timePerLoop) => {
   // Keep track of initial time
   const initialTime = timePerLoop;
 
-  // TODO: make all querySelector elements global
-  // Grab countdown element
-  let currentTime = document.querySelector('.countdown');
-
-  // FIXME: for dev only
+  // For dev only
   // timePerLoop = 3;
 
   const updateCountdown = () => {
@@ -81,7 +85,7 @@ const startCountdown = (timePerLoop) => {
         minutes = Math.floor(initialTime / 60);
         seconds = initialTime % 60;
         // Display time
-        currentTime.innerHTML = `${minutes}:${seconds}`;
+        countdownElement.innerHTML = `${minutes}:${seconds}`;
 
         timePerLoop = initialTime - 1;
         break;
@@ -93,7 +97,7 @@ const startCountdown = (timePerLoop) => {
         minutes = Math.floor(initialTime / 60);
         seconds = initialTime % 60;
         // Display time
-        currentTime.innerHTML = `0:1`;
+        countdownElement.innerHTML = `0:1`;
         break;
 
       default:
@@ -102,7 +106,7 @@ const startCountdown = (timePerLoop) => {
         seconds = timePerLoop % 60;
 
         // Display time
-        currentTime.innerHTML = `${minutes}:${seconds}`;
+        countdownElement.innerHTML = `${minutes}:${seconds}`;
 
         // Decrease seconds by one
         timePerLoop = timePerLoop - 1;
@@ -116,7 +120,7 @@ const startCountdown = (timePerLoop) => {
   // Decrease time remaining every second
   intervalID = setInterval(function() {
     if (totalTime === 0) {
-      resetCountdown();
+      resetCountdown(intervalID, countdownElement);
     } else {
       totalTime -= 1;
       updateCountdown();
@@ -124,14 +128,15 @@ const startCountdown = (timePerLoop) => {
   }, 1000);
 }
 
-const resetCountdown = () => {
+/**
+ * @param {ID} intervalID - tempName = param1
+ * @param {element} countdownElement - tempName = param2
+ */
+const resetCountdown = (intervalID, countdownElement) => {
   // Stop countdown
   clearInterval(intervalID);
-
-  // TODO: make all querySelector elements global
   // Reset visual timer to zero
-  let currentTime = document.querySelector('.countdown');
-  currentTime.innerHTML = `0:00`;
+  countdownElement.innerHTML = `0:00`;
 }
 
 export default class Home extends Component {
