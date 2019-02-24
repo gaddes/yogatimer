@@ -17,6 +17,7 @@ window.onload = function() {
     btn.addEventListener('click', function() {
       startCountdown(btn.innerHTML * 60);
       disableButtons(timerButtons);
+      enableButtons([cancelButton]);
     });
   });
 
@@ -24,15 +25,22 @@ window.onload = function() {
   cancelButton.addEventListener('click', function() {
     resetCountdown();
     enableButtons(timerButtons);
+    disableButtons([cancelButton]);
   });
 };
 
+/** 
+ * @param {array} btnArray - For each element in array, disable button by adding 'disabled = true' attribute
+*/
 const disableButtons = (btnArray) => {
   btnArray.forEach(function(btn) {
     btn.setAttribute('disabled', true);
   })
 };
 
+/** 
+ * @param {array} btnArray - For each element in array, enable button by removing 'disabled' attribute
+*/
 const enableButtons = (btnArray) => {
   btnArray.forEach(function(btn) {
     btn.removeAttribute('disabled');
@@ -141,7 +149,7 @@ export default class Home extends Component {
           <button className='timerbutton'>5</button>
         </div>
         <div className="cancel-button">
-          <button className='cancelbutton'>Cancel</button>
+          <button className='cancelbutton' disabled>Cancel</button>
         </div>
       </div>
     )
