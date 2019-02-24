@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
+import '../css/home.scss'
+import chime from '../audio/chime.mp3';
+// import helpers from '../helpers';
 // import { Link } from 'react-router-dom';
-import './home.scss'
-import chime from './audio/chime.mp3';
 
 // Variable used to start and stop the countdown timer
 let intervalID;
