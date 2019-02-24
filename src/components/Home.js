@@ -7,33 +7,61 @@ import chime from '../audio/chime.mp3';
 // Variable used to start and stop the countdown timer
 let intervalID;
 
+// FIXME:
+let timePerLoop;
+let numberOfLoops;
+
 // Add event listeners on window load
 window.onload = function() {
   // Select elements
   const timerButtons = document.querySelectorAll('.timerbutton');
-  const cancelButton = document.querySelector('.cancelbutton');
-  const countdownElement = document.querySelector('.countdown');
+  const loopButtons = document.querySelectorAll('.loopbutton');
+  const startButton = document.querySelector('.startbutton');
+  const resetButton = document.querySelector('.resetbutton');
+  const countdownElement = document.querySelector('.countdown-text');
+  const loopText = document.querySelector('.loop-text');
 
-  // Start countdown and disable all buttons, regardless of which one is clicked
+  // Set time per loop and disable buttons
   timerButtons.forEach(function(btn) {
     btn.addEventListener('click', function() {
-      startCountdown(btn.innerHTML * 60, countdownElement);
+      timePerLoop = btn.innerHTML * 60;
       disableButtons(timerButtons);
-      enableButtons([cancelButton]);
+      enableButtons([resetButton]);
+      console.log(`time per loop = ${timePerLoop}`);
     });
   });
 
-  // Reset countdown and enable all buttons
-  cancelButton.addEventListener('click', function() {
-    resetCountdown(intervalID, countdownElement);
-    enableButtons(timerButtons);
-    disableButtons([cancelButton]);
+  // Set number of loops and disable buttons
+  loopButtons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      numberOfLoops = btn.innerHTML;
+      disableButtons(loopButtons);
+      enableButtons([resetButton]);
+      console.log(`number of loops = ${numberOfLoops}`);
+    });
+  });
+
+  // Start timer
+  startButton.addEventListener('click', function() {
+    // Check that time and number of loops have been specified, otherwise do nothing
+    if (timePerLoop !== undefined && numberOfLoops !== undefined) {      
+      disableButtons([startButton]);
+      enableButtons([resetButton]);
+      startCountdown(timePerLoop, numberOfLoops, countdownElement, loopText, timerButtons, loopButtons, startButton, resetButton);
+    } else {
+      console.log('please set timer and loops!');
+    }
+  });
+
+  // Reset timer and enable all buttons
+  resetButton.addEventListener('click', function() {
+    resetCountdown(intervalID, countdownElement, loopText, timerButtons, loopButtons, startButton, resetButton);
   });
 };
 
 /** 
  * Disable buttons
- * @param {array} btnArray - For each element in array, disable button by adding 'disabled = true' attribute
+ * @param {array} btnArray
 */
 const disableButtons = (btnArray) => {
   btnArray.forEach(function(btn) {
@@ -43,7 +71,7 @@ const disableButtons = (btnArray) => {
 
 /** 
  * Enable buttons
- * @param {array} btnArray - For each element in array, enable button by removing 'disabled' attribute
+ * @param {array} btnArray
 */
 const enableButtons = (btnArray) => {
   btnArray.forEach(function(btn) {
@@ -53,15 +81,22 @@ const enableButtons = (btnArray) => {
 
 /**
  * Start the countdown timer
- * @param {number} timePerLoop 
- * @param {element} countdownElement 
+ * @param {number} timePerLoop
+ * @param {number} numberOfLoops
+ * @param {element} countdownElement
+ * @param {element} loopText
+ * @param {element} timerButtons
+ * @param {element} loopButtons
+ * @param {element} startButton
+ * @param {element} resetButton
  */
-const startCountdown = (timePerLoop, countdownElement) => {
-  // TODO: replace this with user-selected number of loops
-  let numberOfLoops = 1;
+const startCountdown = (timePerLoop, numberOfLoops, countdownElement, loopText, timerButtons, loopButtons, startButton, resetButton) => {
+  // For dev only
+  // numberOfLoops = 1;
+
   let totalTime = timePerLoop * numberOfLoops;
 
-  // Keep track of initial time
+  // Keep track of initial values
   const initialTime = timePerLoop;
 
   // For dev only
@@ -88,6 +123,9 @@ const startCountdown = (timePerLoop, countdownElement) => {
         countdownElement.innerHTML = `${minutes}:${seconds}`;
 
         timePerLoop = initialTime - 1;
+        numberOfLoops -= 1;
+
+        loopText.innerHTML = `${numberOfLoops} loops remaining`
         break;
 
       case 1:
@@ -116,11 +154,13 @@ const startCountdown = (timePerLoop, countdownElement) => {
 
   // Call countdown function immediately on button click
   updateCountdown();
+  // Update loop text
+  loopText.innerHTML = `${numberOfLoops} loops remaining`
 
   // Decrease time remaining every second
   intervalID = setInterval(function() {
     if (totalTime === 0) {
-      resetCountdown(intervalID, countdownElement);
+      resetCountdown(intervalID, countdownElement, loopText, timerButtons, loopButtons, startButton, resetButton);
     } else {
       totalTime -= 1;
       updateCountdown();
@@ -129,14 +169,32 @@ const startCountdown = (timePerLoop, countdownElement) => {
 }
 
 /**
- * @param {ID} intervalID - tempName = param1
- * @param {element} countdownElement - tempName = param2
+ * Stop timer and reset variables
+ * @param {ID} intervalID
+ * @param {element} countdownElement
+ * @param {element} loopText
+ * @param {element} timerButtons
+ * @param {element} loopButtons
+ * @param {element} startButton
+ * @param {element} resetButton
  */
-const resetCountdown = (intervalID, countdownElement) => {
-  // Stop countdown
+const resetCountdown = (intervalID, countdownElement, loopText, timerButtons, loopButtons, startButton, resetButton) => {
   clearInterval(intervalID);
-  // Reset visual timer to zero
+  resetVariables();
+  enableButtons(timerButtons);
+  enableButtons(loopButtons);
+  enableButtons([startButton]);
+  disableButtons([resetButton]);
   countdownElement.innerHTML = `0:00`;
+  loopText.innerHTML = `? loops remaining`
+}
+
+/**
+ * Reset time per loop and number of loops
+ */
+const resetVariables = () => {
+  timePerLoop = undefined;
+  numberOfLoops = undefined;
 }
 
 export default class Home extends Component {
@@ -144,9 +202,9 @@ export default class Home extends Component {
     return (
       <div>
         <audio ref={ref => this.player = ref} />
-        <h1 className='countdown'>0:00</h1>
-        <p>5 loops remaining</p>
-        <p>Choose number of minutes</p>
+        <h1 className='countdown-text'>0:00</h1>
+        <p className='loop-text'>? loops remaining</p>
+        <p>Choose minutes per loop</p>
         <div className="timer-buttons">
           <button className='timerbutton'>1</button>
           <button className='timerbutton'>2</button>
@@ -154,8 +212,17 @@ export default class Home extends Component {
           <button className='timerbutton'>4</button>
           <button className='timerbutton'>5</button>
         </div>
-        <div className="cancel-button">
-          <button className='cancelbutton' disabled>Cancel</button>
+        <p>Choose number of loops</p>
+        <div className="loop-buttons">
+          <button className='loopbutton'>1</button>
+          <button className='loopbutton'>2</button>
+          <button className='loopbutton'>3</button>
+          <button className='loopbutton'>4</button>
+          <button className='loopbutton'>5</button>
+        </div>
+        <div className="action-buttons">
+          <button className='startbutton'>Start</button>
+          <button className='resetbutton' disabled>Reset</button>
         </div>
       </div>
     )
