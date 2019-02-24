@@ -81,19 +81,11 @@ const startCountdown = (timePerLoop) => {
 
   // Call countdown function immediately on button click
   updateCountdown();
-  
+
   // Decrease time remaining every second
   intervalID = setInterval(function() {
     if (totalTime === 0) {
-      // Stop countdown
-      clearInterval(intervalID);
-
-      // TODO: extract into separate function
-      // Activate timer buttons
-      const buttons = document.querySelectorAll('.timerbutton');
-      buttons.forEach(function(btn) {
-        btn.removeAttribute('disabled');
-      });
+      resetCountdown();
     } else {
       totalTime -= 1;
       updateCountdown();
@@ -108,7 +100,7 @@ const resetCountdown = () => {
   clearInterval(intervalID);
 
   // TODO: make all querySelector elements global
-  // Reset visual timer to 00:00
+  // Reset visual timer to zero
   let currentTime = document.querySelector('.countdown');
   currentTime.innerHTML = `0:00`;
 
