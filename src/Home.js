@@ -6,6 +6,39 @@ import chime from './audio/chime.mp3';
 // Variable used to start and stop the countdown timer
 let intervalID;
 
+// Add event listeners on window load
+window.onload = function() {
+  // Select elements
+  const timerButtons = document.querySelectorAll('.timerbutton');
+  const cancelButton = document.querySelector('.cancelbutton');
+
+  // Start countdown and disable all buttons, regardless of which one is clicked
+  timerButtons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      startCountdown(btn.innerHTML * 60);
+      disableButtons(timerButtons);
+    });
+  });
+
+  // Reset countdown and enable all buttons
+  cancelButton.addEventListener('click', function() {
+    resetCountdown();
+    enableButtons(timerButtons);
+  });
+};
+
+const disableButtons = (btnArray) => {
+  btnArray.forEach(function(btn) {
+    btn.setAttribute('disabled', true);
+  })
+};
+
+const enableButtons = (btnArray) => {
+  btnArray.forEach(function(btn) {
+    btn.removeAttribute('disabled');
+  })
+};
+
 const startCountdown = (timePerLoop) => {
   // TODO: replace this with user-selected number of loops
   let numberOfLoops = 1;
@@ -13,13 +46,6 @@ const startCountdown = (timePerLoop) => {
 
   // Keep track of initial time
   const initialTime = timePerLoop;
-
-  // TODO: extract into separate function
-  // Make timer buttons inactive
-  const buttons = document.querySelectorAll('.timerbutton');
-  buttons.forEach(function(btn) {
-    btn.setAttribute('disabled', true);
-  });
 
   // TODO: make all querySelector elements global
   // Grab countdown element
@@ -37,7 +63,6 @@ const startCountdown = (timePerLoop) => {
 
     switch(timePerLoop) {
       case 0:
-        // TODO: Activate buttons  
         // Play sound and reset timer
         const sound = new Audio(chime);
         sound.play();
@@ -91,8 +116,6 @@ const startCountdown = (timePerLoop) => {
 }
 
 const resetCountdown = () => {
-  console.log('it works!');
-
   // Stop countdown
   clearInterval(intervalID);
 
@@ -100,13 +123,6 @@ const resetCountdown = () => {
   // Reset visual timer to zero
   let currentTime = document.querySelector('.countdown');
   currentTime.innerHTML = `0:00`;
-
-  // TODO: extract into separate function
-  // Activate timer buttons
-  const buttons = document.querySelectorAll('.timerbutton');
-  buttons.forEach(function(btn) {
-    btn.removeAttribute('disabled');
-  });
 }
 
 export default class Home extends Component {
@@ -117,15 +133,15 @@ export default class Home extends Component {
         <h1 className='countdown'>0:00</h1>
         <p>5 loops remaining</p>
         <p>Choose number of minutes</p>
-        <div className="minute-buttons">
-          <button className='timerbutton' onClick={() => startCountdown(60)}>1</button>
-          <button className='timerbutton' onClick={() => startCountdown(120)}>2</button>
-          <button className='timerbutton' onClick={() => startCountdown(180)}>3</button>
-          <button className='timerbutton' onClick={() => startCountdown(240)}>4</button>
-          <button className='timerbutton' onClick={() => startCountdown(300)}>5</button>
+        <div className="timer-buttons">
+          <button className='timerbutton'>1</button>
+          <button className='timerbutton'>2</button>
+          <button className='timerbutton'>3</button>
+          <button className='timerbutton'>4</button>
+          <button className='timerbutton'>5</button>
         </div>
         <div className="cancel-button">
-          <button className='cancelbutton' onClick={() => resetCountdown()}>Cancel</button>
+          <button className='cancelbutton'>Cancel</button>
         </div>
       </div>
     )
