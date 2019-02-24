@@ -50,9 +50,6 @@ const startCountdown = (timePerLoop) => {
         currentTime.innerHTML = `${minutes}:${seconds}`;
 
         timePerLoop = initialTime - 1;
-
-        // TODO: Stop timer
-        // clearInterval(timer);
         break;
 
       case 1:
