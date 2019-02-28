@@ -1,6 +1,18 @@
-.link {
-  margin: 1rem;
-  padding: 1rem;
-  border: 1px solid blue;
-  border-radius: 5px;
+.home {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-container {
+  margin: 2rem 0;
+}
+
+.btn {
+  margin-right: 0.5rem;
+}
+
+.action-buttons {
+  margin-top: 1rem;
 }

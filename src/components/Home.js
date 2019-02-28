@@ -186,7 +186,7 @@ const resetCountdown = (intervalID, countdownElement, loopText, timerButtons, lo
   enableButtons([startButton]);
   disableButtons([resetButton]);
   countdownElement.innerHTML = `0:00`;
-  loopText.innerHTML = `? loops remaining`
+  loopText.innerHTML = `0 loops remaining`
 }
 
 /**
@@ -200,29 +200,33 @@ const resetVariables = () => {
 export default class Home extends Component {
   render() {
     return (
-      <div>
-        <audio ref={ref => this.player = ref} />
-        <h1 className='countdown-text'>0:00</h1>
-        <p className='loop-text'>? loops remaining</p>
-        <p>Choose minutes per loop</p>
-        <div className="timer-buttons">
-          <button className='timerbutton'>1</button>
-          <button className='timerbutton'>2</button>
-          <button className='timerbutton'>3</button>
-          <button className='timerbutton'>4</button>
-          <button className='timerbutton'>5</button>
-        </div>
-        <p>Choose number of loops</p>
-        <div className="loop-buttons">
-          <button className='loopbutton'>1</button>
-          <button className='loopbutton'>2</button>
-          <button className='loopbutton'>3</button>
-          <button className='loopbutton'>4</button>
-          <button className='loopbutton'>5</button>
-        </div>
-        <div className="action-buttons">
-          <button className='startbutton'>Start</button>
-          <button className='resetbutton' disabled>Reset</button>
+      <div className="home">
+        <div className="home-container">
+          <audio ref={ref => this.player = ref} />
+          <h1 className='countdown-text'>0:00</h1>
+          <p className='loop-text'>0 loops remaining</p>
+          <div className="btn-container">
+            <p>Choose <b>minutes</b> per loop:</p>
+            <div className="timer-buttons">
+              <button className='btn btn-standard timerbutton'>1</button>
+              <button className='btn btn-standard timerbutton'>2</button>
+              <button className='btn btn-standard timerbutton'>3</button>
+              <button className='btn btn-standard timerbutton'>4</button>
+              <button className='btn btn-standard timerbutton'>5</button>
+            </div>
+            <p>Choose <b>number</b> of loops:</p>
+            <div className="loop-buttons">
+              <button className='btn btn-standard loopbutton'>1</button>
+              <button className='btn btn-standard loopbutton'>2</button>
+              <button className='btn btn-standard loopbutton'>3</button>
+              <button className='btn btn-standard loopbutton'>4</button>
+              <button className='btn btn-standard loopbutton'>5</button>
+            </div>
+          </div>
+          <div className="action-buttons">
+            <button className='btn btn-success startbutton'>Start</button>
+            <button className='btn btn-warning resetbutton' disabled>Reset</button>
+          </div>
         </div>
       </div>
     )
