@@ -203,7 +203,8 @@ export default class Home extends Component {
       <div className="home">
         <div className="home-container">
           <audio ref={ref => this.player = ref} />
-          <h1 className='countdown-text'>0:00</h1>
+          <h1 className='title'>YogaTimer<sup> (TM)</sup></h1>
+          <p className='countdown-text'>0:00</p>
           <p className='loop-text'>0 loops remaining</p>
           <div className="btn-container">
             <p>Choose <b>minutes</b> per loop:</p>

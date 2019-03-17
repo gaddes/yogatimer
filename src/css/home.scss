@@ -5,6 +5,19 @@
   align-items: center;
 }
 
+.title {
+  display: inline-block;
+  font-size: 1.2rem;
+  padding-bottom: 0.2rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid black;
+}
+
+.countdown-text {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
 .btn-container {
   margin: 2rem 0;
 }
